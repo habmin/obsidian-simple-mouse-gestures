@@ -132,3 +132,49 @@ class SampleSettingTab extends PluginSettingTab {
 				}));
 	}
 }
+
+
+// Sample JS Code - Need to convert to TS
+const { Plugin } = require('obsidian');
+
+module.exports = class ExamplePlugin extends Plugin {
+    onload() {
+      console.log('Loading Example Plugin');
+  
+      this.addCommand({
+        id: 'log-message',
+        name: 'Log Message',
+        callback: () => {
+          console.log('Command executed!');
+        }
+      });
+      this.isHandlingEvent = false;
+      this.handleWheelEvent = this.handleWheelEvent.bind(this);
+      document.addEventListener('wheel', this.handleWheelEvent);
+    }
+  
+    onunload() {
+      console.log('Unloading Example Plugin');
+  
+      // Remove the event listener for the scroll wheel
+      document.removeEventListener('wheel', this.handleWheelEvent);
+    }
+  
+    handleWheelEvent(event) {
+        if (event.deltaX < 25 && event.deltaX > -25) {
+            this.isHandlingEvent = false;
+        }
+
+        if (this.isHandlingEvent) return;
+
+        if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+          if (event.deltaX > 250) {
+            this.isHandlingEvent = true;
+            this.app.workspace.rightSplit.collapsed ? this.app.workspace.rightSplit.expand() : this.app.workspace.rightSplit.collapse();
+          } else if (event.deltaX < -250) {
+            this.isHandlingEvent = true;
+            this.app.workspace.leftSplit.collapsed ? this.app.workspace.leftSplit.expand() : this.app.workspace.leftSplit.collapse();
+          }
+        }
+      }
+  }
